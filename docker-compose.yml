@@ -1,0 +1,54 @@
+services:
+    # app:
+    #     build:
+    #         dockerfile: Dockerfile
+    #         context: .
+    #     container_name: node-app
+    #     restart: on-failure
+    #     env_file: .env
+    #     ports:
+    #         - '${APP_PORT:-3000}:3000'
+
+    jenkins-master:
+        build:
+            dockerfile: Dockerfile.jenkins
+            context: docker
+        # image: azzazkhan/jenkins
+        # image: jenkins/jenkins:lts-jdk17
+        container_name: jenkins-master
+        restart: always
+        ports:
+            - '8080:8080'
+            - '50000:50000'
+        volumes:
+            - 'jenkins:/var/jenkins_home'
+        networks:
+            - jenkins
+
+    # jenkins-docker-proxy:
+    #     image: alpine/socat:latest
+    #     restart: always
+    #     ports:
+    #         - '2376:2375'
+    #     volumes:
+    #         - '/var/run/docker.sock:/var/run/docker.sock'
+    #     command: 'tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock'
+    #     networks:
+    #         - jenkins
+
+    # jenkins-ssh-agent:
+    #     build:
+    #         dockerfile: Dockerfile.jenkins
+    #         context: docker
+    #     # image: jenkins/ssh-agent:latest-jdk17
+    #     container_name: jenkins-ssh-agent
+    #     restart: always
+    #     env_file: .env
+    #     networks:
+    #         - jenkins
+
+volumes:
+    jenkins:
+
+networks:
+    jenkins:
